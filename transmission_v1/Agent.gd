@@ -27,6 +27,7 @@ var anger_signt = 100
 var rng = RandomNumberGenerator.new()
 var near = []
 
+const gameOverScreen = preload("res://UI.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -85,14 +86,16 @@ func dist(agent):
 
 
 #Contains the application of gather, separate and alignement
-func rules(swarm,mem):
+func rules(swarm,mem,bus_swarm):
 	var temp 
+	temp = focus_bus(bus_swarm)
+	vitesse += temp
 	temp = gather(swarm)
-	vitesse += temp # modify the agent's speed with the resulat of gather 
+	vitesse += temp # modify the agent's speed with the result of gather 
 	temp = separation(swarm)
-	vitesse += temp # modify the agent's speed with the resulat of separation
+	vitesse += temp # modify the agent's speed with the result of separation
 	temp = alignment(swarm,mem)
-	vitesse += temp # modify the agent's speed with the resulat of alignement
+	vitesse += temp # modify the agent's speed with the result of alignement
 	let_anger(swarm)
 	
 # Calculate the direction needed to get closer to other agents
@@ -135,26 +138,27 @@ func alignment(swarm,mem):
 		mean = sum / N
 	return alignment_coef*mean.normalized() # return a vector which is the mean all of neighbours' speed
 
-
-# Make rise the emotion level of the dinosaurs when they are close to each others
+# Modify the emotion level of the dinosaurs depending on the number of neighbours around
 func let_anger(swarm):
 	for wanis in swarm:
-		if emotion >= 0:
+		if emotion >= 0: # The emotion level is set between 0 and 20
 			if emotion <= 20:
 				if wanis != self:
-					if dist(wanis) <= anger_signt:
+					if dist(wanis) <= anger_signt: # Couting the nearest neighbours
 						if !(near.has(wanis)): # if not already in the list put it in it
 							near.append(wanis) # list of the nearest neighbours
 					elif near.has(wanis): #if not close to the others, change his anger and remove it of the list if in it
 						near.erase(wanis)
 						wanis.near.erase(self)
 				emo_analyse()
+				# 3 neighbours make the emotion rise no matter what
 				if near.size() + 1 >= 4: # +1 to count the actual wanis
 					if emotion < 20:
 						emotion += 1
 					for i in near.size():
 						if emotion < 20:
 							near[i].emotion += 1
+				# 2 neighbours make decrease the anger and rise the loneliness
 				elif near.size() + 1 <= 3 and near.size() + 1 > 1:
 					if angry :
 						emotion += -1
@@ -165,6 +169,7 @@ func let_anger(swarm):
 							near[i].emotion += -1
 						elif scared:
 							emotion += 1
+				# No neighbour makes the emotion decrease, it is abled to go in the loneliness range
 				elif near.size() + 1 == 1:
 					if emotion > 0:
 						emotion += -1
@@ -176,11 +181,68 @@ func let_anger(swarm):
 		else:
 			emotion = 0
 
+# Analyse the emotion level of the dinos to modify their comportement and to set their emotion 
 func emo_analyse():
-	if emotion > 15:
+	if emotion > 15: # modifie the comportement od the dino
 		angry = true
+		gather_coef = 2 # They stay as well gathered than separate
+		separation_coef = 2
+		alignment_coef = 0
 	elif emotion < 5:
-		scared = true
+		scared = true # They want to gather mich more than to separate and find friends
+		gather_coef = 4
+		separation_coef = 2
+		alignment_coef = 1.5
 	else:
-		angry = false
+		angry = false # default comportement
 		scared = false
+		gather_coef = 2.5 
+		separation_coef = 3 
+		alignment_coef = 0.4
+
+# Orientate the dino in the nearest bus' direction
+func focus_bus(bus_swarm):
+	if angry:
+		var bus_not_broken = count_bus_not_broken(bus_swarm)
+		var idx_bus = min_bus(bus_not_broken)
+		if idx_bus == -1:
+			add_child(gameOverScreen.instance()) #display to game over screen
+			get_tree().paused = true # pause the "game"
+			return Vector2(0, 0)
+		else:
+			var focused_bus = bus_not_broken[idx_bus]
+			var pos = (focused_bus.position - position).normalized()
+			for wanis in near:
+				wanis.position += (focused_bus.position - wanis.position).normalized()
+			return pos 
+	else:
+		return Vector2(0, 0) # not angry so don't need to focus bus. so no modification
+
+# Find de nearest bus
+func min_bus(bus_not_broken):
+		if not bus_not_broken.empty():
+			var idx_bus = 0
+			var min_dist = dist(bus_not_broken[0])
+	
+			for i in bus_not_broken.size(): # select the closest bus to the current wanis
+				var d = dist(bus_not_broken[i])
+				min_dist = min(min_dist, d)
+				if min_dist == d:
+					idx_bus = i
+	
+			return idx_bus
+		else:
+			return -1
+
+# Count the buses not broken
+func count_bus_not_broken(bus_swarm):
+	var bus_not_broken = []
+	for bus in bus_swarm:
+		if bus.broken == false:
+			bus_not_broken.append(bus)
+	return bus_not_broken
+
+# When a body entered in the dino area, it breaks the bus
+func _on_Area2D_body_entered(body):
+	if "Bus" in body.name and angry:
+		body.broken = true

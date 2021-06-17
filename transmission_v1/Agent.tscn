@@ -21,9 +21,9 @@ animations = [ {
 "name": "scared_gauche",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 13 ), ExtResource( 11 ) ],
+"frames": [ ExtResource( 8 ), ExtResource( 9 ) ],
 "loop": true,
-"name": "scared_droite",
+"name": "bad_droite",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 7 ) ],
@@ -31,9 +31,9 @@ animations = [ {
 "name": "bad_gauche",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 8 ), ExtResource( 9 ) ],
+"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
 "loop": true,
-"name": "bad_droite",
+"name": "gauche",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 4 ), ExtResource( 5 ) ],
@@ -41,14 +41,14 @@ animations = [ {
 "name": "droite",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"frames": [ ExtResource( 13 ), ExtResource( 11 ) ],
 "loop": true,
-"name": "gauche",
+"name": "scared_droite",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 46, 42 )
+extents = Vector2( 24.8071, 23.4575 )
 
 [node name="Area2D" type="Area2D"]
 script = ExtResource( 1 )
@@ -59,6 +59,6 @@ frames = SubResource( 1 )
 animation = "scared_gauche"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 2.61459, 5.37442 )
 shape = SubResource( 2 )
-[connection signal="area_entered" from="." to="." method="_on_Area2D_area_entered"]
-[connection signal="area_exited" from="." to="." method="_on_Area2D_area_exited"]
+[connection signal="body_entered" from="." to="." method="_on_Area2D_body_entered"]

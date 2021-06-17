@@ -15,10 +15,9 @@ _global_script_class_icons={
 
 [application]
 
-config/name="rendu_part1"
+config/name="dino_game"
 run/main_scene="res://Main.tscn"
-boot_splash/image="res://logo.png"
-config/icon="res://logo.png"
+config/icon="res://new_icon.png"
 
 [rendering]
 

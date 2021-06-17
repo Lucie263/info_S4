@@ -1,4 +1,4 @@
-extends Area2D
+extends KinematicBody2D
 """
 ================================================================================
 GDscript
@@ -12,13 +12,14 @@ This file contains all the buses's functions. They are identical to the agent's 
 
 # Declare member variables here, they can be modified 
 var vitesse # agent's speed
-var gather_sight = 250 # agent's gathering sight
+var gather_sight = 10 # agent's gathering sight
 var separation_sight = 100 # agent's separation sight
 var align_sight = 200 # agent's alignement sight
-var gather_coef = 1.5 # agent's gathering coefficient
-var separation_coef = 4 # agent's separation coefficient
-var alignment_coef = 0.2 # agent's alignment coefficient
+var gather_coef = 2 # agent's gathering coefficient
+var separation_coef = 2 # agent's separation coefficient
+var alignment_coef = 0.1 # agent's alignment coefficient
 var screen_size
+var broken = false
 var rng = RandomNumberGenerator.new()
 
 
@@ -26,7 +27,7 @@ var rng = RandomNumberGenerator.new()
 func _ready():
 	rng.randomize()
 	screen_size = get_viewport_rect().size
-	position = Vector2(rng.randi_range(20,screen_size.x-20),rng.randi_range(20,screen_size.y-20 )) # screen-size-20 so that wanis stays in the window
+	position = Vector2(rng.randi_range(520 ,520),rng.randi_range(30, 400)) # screen-size-20 so that wanis stays in the window
 	vitesse = Vector2(rng.randi_range(-1,1),rng.randi_range(-1,1)) # initialization of the agent's speed
 	vitesse.normalized() 
 	set_process(true)
@@ -34,29 +35,29 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	bordure() 
-	position += vitesse*delta # making the agent move at each frame
-	if vitesse.x >= 0 :
-		$AnimatedSprite.animation = "droite"
-	if vitesse.x <= 0 :
-		$AnimatedSprite.animation = "gauche"
+	var collision = move_and_collide(vitesse * delta)
+	move_and_slide(vitesse,Vector2(0,-1))
+	if broken:
+		vitesse = Vector2(0,0)
+		$AnimatedSprite.animation = "broken"
+	else:
+		if vitesse.x >= 0 :
+			$AnimatedSprite.animation = "droite"
+		if vitesse.x <= 0 :
+			$AnimatedSprite.animation = "gauche"
+		
+	# using move_and_collide
+	if collision:
+		vitesse = vitesse.slide(collision.normal)
+	if vitesse <= vitesse*0 :
+		position += vitesse*delta
+		
+	# using move_and_slide
+	vitesse = move_and_slide(vitesse)
+	
 	update()
 
-
-# Checking if the agent is still in the window
-func bordure():
-	# speed indicates also the direction ( positive = to the right, negative = to the left)
-	if position.x >= screen_size.x-20:
-		vitesse.x = rng.randi_range(-1,0) #changing the agent's direction to go to opposite way
-	if position.y >= screen_size.y-20:
-		vitesse.y = rng.randi_range(-1,0)
-	if position.y <= 20:
-		vitesse.y = rng.randi_range(0,1)
-	if position.x <= 20:
-		vitesse.x = rng.randi_range(0,1)
-
-
-#draw green wanis dinosaure
+#draw bus
 func _draw():
 	$AnimatedSprite.play()
 
@@ -116,3 +117,4 @@ func alignment(swarm,mem):
 			N += 1
 		mean = sum / N
 	return alignment_coef*mean.normalized() # return a vector which is the mean all of neighbours' speed
+

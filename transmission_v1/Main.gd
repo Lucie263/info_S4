@@ -25,13 +25,14 @@ var mem_vitesse_bus = [] # variable to  store bus's speed
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	get_tree().paused = false # relaunch "game" after restart
 	for i in range(10):
 		var temp = agent.instance() # creation of each agents
 		swarm.append(temp)
 		add_child(temp)
 		mem_vitesse.append(temp.vitesse)
 	
-	for i in range(2):	
+	for i in range(10):
 		var temp = bus.instance() # creation of each agents
 		bus_swarm.append(temp)
 		add_child(temp)
@@ -43,7 +44,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	for agent in swarm:
-		agent.rules(swarm,mem_vitesse) # running the crowd simulation's rules
+		agent.rules(swarm,mem_vitesse,bus_swarm) # running the crowd simulation's rules
 	mem_vitesse = [] # erase the storage of the previous agents' speed
 	for agent in swarm:
 		mem_vitesse.append(agent.vitesse) # store the new agents's speed
