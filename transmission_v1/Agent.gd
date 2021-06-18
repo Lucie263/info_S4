@@ -23,7 +23,7 @@ var screen_size
 var emotion
 var angry = false
 var scared = false
-var anger_signt = 100
+var anger_sight = 100
 var rng = RandomNumberGenerator.new()
 var near = []
 
@@ -96,7 +96,8 @@ func rules(swarm,mem,bus_swarm):
 	vitesse += temp # modify the agent's speed with the result of separation
 	temp = alignment(swarm,mem)
 	vitesse += temp # modify the agent's speed with the result of alignement
-	let_anger(swarm)
+	modif_emo(swarm)
+	# print(emotion)
 	
 # Calculate the direction needed to get closer to other agents
 func gather(swarm):
@@ -139,12 +140,12 @@ func alignment(swarm,mem):
 	return alignment_coef*mean.normalized() # return a vector which is the mean all of neighbours' speed
 
 # Modify the emotion level of the dinosaurs depending on the number of neighbours around
-func let_anger(swarm):
+func modif_emo(swarm):
 	for wanis in swarm:
 		if emotion >= 0: # The emotion level is set between 0 and 20
 			if emotion <= 20:
 				if wanis != self:
-					if dist(wanis) <= anger_signt: # Couting the nearest neighbours
+					if dist(wanis) <= anger_sight: # Couting the nearest neighbours
 						if !(near.has(wanis)): # if not already in the list put it in it
 							near.append(wanis) # list of the nearest neighbours
 					elif near.has(wanis): #if not close to the others, change his anger and remove it of the list if in it

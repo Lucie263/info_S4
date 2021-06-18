@@ -14,19 +14,19 @@ animations = [ {
 "name": "broken",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 1 ), ExtResource( 2 ) ],
-"loop": true,
-"name": "droite",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 4 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "gauche",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "droite",
+"speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 30.9137, 13.6294 )
+extents = Vector2( 45.1503, 21.2229 )
 
 [node name="Bus" type="KinematicBody2D"]
 scale = Vector2( 0.4, 0.4 )

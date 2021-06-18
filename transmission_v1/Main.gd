@@ -14,7 +14,6 @@ It is a crowd simulation with two types of agent : a Dinosaure and a bus.
 export (PackedScene) var agent # import the scene of the agent
 export (PackedScene) var bus
 
-
 # Declare member variables here, they can be modified
 var N = 40# number of agents
 var M = 10 
@@ -26,6 +25,7 @@ var mem_vitesse_bus = [] # variable to  store bus's speed
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	get_tree().paused = false # relaunch "game" after restart
+	
 	for i in range(10):
 		var temp = agent.instance() # creation of each agents
 		swarm.append(temp)
