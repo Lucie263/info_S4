@@ -5,7 +5,7 @@
 [ext_resource path="res://Bus.tscn" type="PackedScene" id=3]
 [ext_resource path="res://fond.png" type="Texture" id=4]
 
-[sub_resource type="RectangleShape2D" id=27]
+[sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 36.3857, 49.0396 )
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -97,19 +97,19 @@ collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite"]
 position = Vector2( 459.298, 217.168 )
-shape = SubResource( 27 )
+shape = SubResource( 1 )
 
 [node name="CollisionShape2D30" type="CollisionShape2D" parent="Sprite"]
 position = Vector2( 458.469, 455.586 )
-shape = SubResource( 27 )
+shape = SubResource( 1 )
 
 [node name="CollisionShape2D31" type="CollisionShape2D" parent="Sprite"]
 position = Vector2( 459.862, 412.475 )
-shape = SubResource( 27 )
+shape = SubResource( 1 )
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="Sprite"]
 position = Vector2( 991.608, 449.936 )
-shape = SubResource( 27 )
+shape = SubResource( 1 )
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Sprite"]
 position = Vector2( 514.837, -9.98472 )
