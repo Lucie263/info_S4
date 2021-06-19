@@ -6,9 +6,9 @@ GDscript
 file agent.gd
 ================================================================================
 Authors : Lucie LEOPOLD, Julie PERE, Clément VIVIER
-Date : 30/04/2021
+Date : 19/06/2021
 ================================================================================
-This file contains all the agent's functions.
+This file contains all the agent's functions. The agent is a dinosaur
 """
 
 # Declare member variables here, they can be modified 
@@ -20,10 +20,11 @@ var gather_coef = 2.5 # agent's gathering coefficient
 var separation_coef = 3 # agent's separation coefficient
 var alignment_coef = 0.4 # agent's alignment coefficient
 var screen_size
-var emotion
+var emotion # variable which depicts the emotion scale
 var angry = false
 var scared = false
-var anger_sight = 100
+var focus_coef = 1
+var emo_sight = 100 # emotion sight
 var rng = RandomNumberGenerator.new()
 var near = []
 
@@ -33,7 +34,7 @@ const gameOverScreen = preload("res://UI.tscn")
 func _ready():
 	rng.randomize()
 	screen_size = get_viewport_rect().size
-	emotion = rng.randi_range(6,15)
+	emotion = rng.randi_range(6,15) # neutral emotion, green
 	position = Vector2(rng.randi_range(20,screen_size.x-20),rng.randi_range(20,screen_size.y-20 )) # screen-size-20 so that wanis stays in the window
 	vitesse = Vector2(rng.randi_range(-1,1),rng.randi_range(-1,1)) # initialization of the agent's speed
 	vitesse.normalized() 
@@ -145,7 +146,7 @@ func modif_emo(swarm):
 		if emotion >= 0: # The emotion level is set between 0 and 20
 			if emotion <= 20:
 				if wanis != self:
-					if dist(wanis) <= anger_sight: # Couting the nearest neighbours
+					if dist(wanis) <= emo_sight: # Couting the nearest neighbours
 						if !(near.has(wanis)): # if not already in the list put it in it
 							near.append(wanis) # list of the nearest neighbours
 					elif near.has(wanis): #if not close to the others, change his anger and remove it of the list if in it
@@ -178,13 +179,13 @@ func modif_emo(swarm):
 						if emotion > 0:
 							near[i].emotion += -1
 			else:
-				emotion = 20
+				emotion = 20 # extremum numbers of the emotion scale
 		else:
 			emotion = 0
 
 # Analyse the emotion level of the dinos to modify their comportement and to set their emotion 
 func emo_analyse():
-	if emotion > 15: # modifie the comportement od the dino
+	if emotion > 15: # modifie the comportement of the dino
 		angry = true
 		gather_coef = 2 # They stay as well gathered than separate
 		separation_coef = 2
@@ -213,8 +214,8 @@ func focus_bus(bus_swarm):
 		else:
 			var focused_bus = bus_not_broken[idx_bus]
 			var pos = (focused_bus.position - position).normalized()
-			for wanis in near:
-				wanis.position += (focused_bus.position - wanis.position).normalized()
+			for wanis in near: # orientate all the nearest angry dino in the direction of the bus
+				wanis.position += focus_coef*(focused_bus.position - wanis.position).normalized()
 			return pos 
 	else:
 		return Vector2(0, 0) # not angry so don't need to focus bus. so no modification

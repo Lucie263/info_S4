@@ -5,18 +5,18 @@ GDscript
 file main.gd
 ================================================================================
 Authors : Lucie LEOPOLD, Julie PERE, Clément VIVIER
-Date : 30/04/2021
+Date : 19/06/2021
 ================================================================================
 This file contains all the functions needed to run the project entirely. 
 It is a crowd simulation with two types of agent : a Dinosaure and a bus.
 """
 
-export (PackedScene) var agent # import the scene of the agent
-export (PackedScene) var bus
+export (PackedScene) var agent # import the scene of the dinosaur
+export (PackedScene) var bus  # import the scene of the bus
 
 # Declare member variables here, they can be modified
-var N = 40# number of agents
-var M = 10 
+var N = 10 # number of dinos
+var M = 10 # number of buses
 var swarm = [] # variable to store all the  dinosaure agents
 var bus_swarm = [] # variable to store all the buses
 var mem_vitesse = [] # variable to  store agents' speed
@@ -26,14 +26,14 @@ var mem_vitesse_bus = [] # variable to  store bus's speed
 func _ready():
 	get_tree().paused = false # relaunch "game" after restart
 	
-	for i in range(10):
-		var temp = agent.instance() # creation of each agents
+	for i in range(N):
+		var temp = agent.instance() # creation of each dinosaur
 		swarm.append(temp)
 		add_child(temp)
 		mem_vitesse.append(temp.vitesse)
 	
-	for i in range(10):
-		var temp = bus.instance() # creation of each agents
+	for i in range(M):
+		var temp = bus.instance() # creation of each bus
 		bus_swarm.append(temp)
 		add_child(temp)
 		mem_vitesse_bus.append(temp.vitesse)

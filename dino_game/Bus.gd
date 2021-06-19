@@ -5,9 +5,9 @@ GDscript
 file agent.gd
 ================================================================================
 Authors : Lucie LEOPOLD, Julie PERE, Clément VIVIER
-Date : 30/04/2021
+Date : 19/06/2021
 ================================================================================
-This file contains all the buses's functions. They are identical to the agent's ones.
+This file contains all the buses's functions.
 """
 
 # Declare member variables here, they can be modified 
@@ -19,7 +19,7 @@ var gather_coef = 2 # agent's gathering coefficient
 var separation_coef = 2 # agent's separation coefficient
 var alignment_coef = 0.1 # agent's alignment coefficient
 var screen_size
-var broken = false
+var broken = false # the buses aren't broken at the beginning
 var rng = RandomNumberGenerator.new()
 
 
@@ -35,7 +35,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var collision = move_and_collide(vitesse * delta)
+	var collision = move_and_collide(vitesse * delta) # make the bus able to move and hit the walls
 	move_and_slide(vitesse,Vector2(0,-1))
 	if broken:
 		vitesse = Vector2(0,0)
